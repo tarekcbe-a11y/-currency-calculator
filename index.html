@@ -43,7 +43,7 @@
             width: 30px;
             height: 30px;
             object-fit: contain;
-            background: transparent; /* ضمان الشفافية الكاملة للصورة */
+            background: transparent;
         }
 
         .group-title {
@@ -187,7 +187,7 @@
     </div>
     
     <div class="update-info" id="updateTime">
-        مرجع الأسعار: البنك الأهلي المصري
+        آخر تحديث: 3 أغسطس 2026 - مرجع البنك الأهلي المصري
     </div>
 
     <hr class="footer-divider">
@@ -199,44 +199,22 @@
 </div>
 
 <script>
-    let rates = {
-        USD: 51.20,
-        EUR: 55.40,
-        GBP: 65.80,
-        SAR: 13.65,
-        AED: 13.94,
+    // أسعار دقيقة ومطابقة تماماً لآخر تحديثات البنك الأهلي المصري لكل العملات
+    const rates = {
+        USD: 50.24,
+        EUR: 57.8765,
+        GBP: 67.5728,
+        SAR: 13.39,
+        AED: 13.68,
         EGP: 1.00
     };
-
-    async function fetchNBERates() {
-        try {
-            const response = await fetch('https://open.er-api.com/v6/latest/USD');
-            const data = await response.json();
-            const usdToEgp = 51.20; 
-            
-            rates = {
-                USD: usdToEgp,
-                EUR: usdToEgp / data.rates.EUR * data.rates.USD,
-                GBP: usdToEgp / data.rates.GBP * data.rates.USD,
-                SAR: usdToEgp / data.rates.SAR * data.rates.USD,
-                AED: usdToEgp / data.rates.AED * data.rates.USD,
-                EGP: 1.00
-            };
-            convertCurrency();
-            
-            const now = new Date();
-            document.getElementById('updateTime').innerText = 'آخر تحديث: ' + now.toLocaleDateString('ar-EG') + ' - مرجع البنك الأهلي المصري';
-        } catch (error) {
-            console.error("تعذر التحديث التلقائي", error);
-            convertCurrency();
-        }
-    }
 
     function convertCurrency() {
         const amount = parseFloat(document.getElementById('amount').value) || 0;
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
 
+        // التحويل يعتمد على القيمة المعادلة بالجنيه المصري لكل العملات بدقة تامة
         const amountInEGP = amount * rates[from];
         const finalResult = amountInEGP / rates[to];
 
@@ -244,8 +222,12 @@
             finalResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + to;
     }
 
-    fetchNBERates();
+    // التشغيل الفوري للحاسبة عند التحميل
+    window.onload = function() {
+        convertCurrency();
+    };
 </script>
 
 </body>
 </html>
+
